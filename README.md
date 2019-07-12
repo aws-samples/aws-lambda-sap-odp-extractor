@@ -9,7 +9,7 @@ This is a sample serverless application (based on AWS Serverless Application Mod
 * [Docker installed](https://www.docker.com/community-edition)
 * [AWS SAM CLI installed](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 * SAP application (ABAP stack) with SAP Netweaver 7.5 or above. If required, you can create an SAP ABAP developer edition using cloud formation template [here](https://github.com/aws-samples/aws-cloudformation-sap-abap-dev)
-* OData services for ODP based extraction are already created. It is assumed to you know about ODP and how OData services can be created from them. [This](https://www.google.com/search?q=sap+odp+odata&oq=sap+odp+odata&aqs=chrome..69i57j69i60j69i65j69i60l2j69i59.1812j0j7&sourceid=chrome&ie=UTF-8) SAP documentation link provides information on how to expose ODP as OData services. You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/).
+* OData services for ODP based extraction are already created. It is assumed to you know about ODP and how OData services can be created from them. [This](https://help.sap.com/viewer/ccc9cdbdc6cd4eceaf1e5485b1bf8f4b/7.5.9/en-US/11853413cf124dde91925284133c007d.html) SAP documentation link provides information on how to expose ODP as OData services. You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/).
 
 ## Setup Process
 

@@ -33,9 +33,9 @@ Metadata:
     LicenseUrl: LICENSE.txt
     ReadmeUrl: sam-repo/README.md
     Labels: ['saponaws','sap','lambdaextractor','odp']
-    HomePageUrl: https://code.amazon.com/packages/Aws-sap-cert-auth/trees/master
-    SemanticVersion: 0.0.3
-    SourceCodeUrl: https://code.amazon.com/packages/Aws-sap-cert-auth/trees/master
+    HomePageUrl: https://code.amazon.com/packages/Aws-sap-odp-extractor/trees/master
+    SemanticVersion: 0.0.4
+    SourceCodeUrl: https://code.amazon.com/packages/Aws-sap-odp-extractor/trees/master
 
 Resources:
     DynamoDBTable:
