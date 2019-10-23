@@ -19,7 +19,7 @@ This is a sample serverless application (based on AWS Serverless Application Mod
 
 2. Navigate to the root folder of the cloned repo and then perform the preparation steps.
 ```bash
-cd aws-sap-odp
+cd aws-lambda-sap-odp-extractor
 ```
 
 ### Preparation
