@@ -1,4 +1,4 @@
-# aws-sap-cert-auth
+# aws-sap-odp-auth
 
 This is a sample serverless application (based on AWS Serverless Application Model - AWS SAM) for extracting data from SAP applications (SAP S/4HANA, SAP ECC and SAP BW) using Operational Data Provisioning (ODP). You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/). Operational Data Provisioning can expose the full load and delta data using OData services. This application package contains a Lambda layer to connect with SAP and consume the OData services as a REST API. Extracted data is saved to S3 Bucket. A DynamoDB table is also created to store the metadata for extracts. The package also contains a sample Lambda function to demonstrate usage of the lamdba layer
 
@@ -60,7 +60,6 @@ aws s3 mb s3://sap-odp-data-extracts --region us-east-1
 
 2. Start the Lambda function locally. Note down the end point url where Lambda is running. Usually http://127.0.0.1:3001
 ```bash
-
 sam local start-lambda \
     --env-vars environment.json \
     --template ../template.yaml \
@@ -70,13 +69,11 @@ sam local start-lambda \
 
 3. Open another terminal window and run the following command to invoke the lambda function. Validate the local endpoint url for Lambda
 ```bash
-
 aws lambda invoke \
     --function-name "SAPODPExtractorTestFunction" \
     --endpoint-url "http://127.0.0.1:3001" \
     --no-verify-ssl \
     out.txt
-
 ```
 4. Once run, check out.txt which should have the output of the lambda function
 
