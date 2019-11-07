@@ -12,7 +12,7 @@ This is a sample application for extracting data from SAP applications (SAP S/4H
 
 ## Setup Process
 
-Note: This process creates various resources in your AWS account. Check the resources created section for more information what gets created. You incur charges for resources using the resources created and you are responsible for those charges.
+Note: This process creates various resources in your AWS account. Check the resources created section for more information what gets created. You incur charges for using the resources created and you are responsible for those charges.
 
 ### Installation
 
