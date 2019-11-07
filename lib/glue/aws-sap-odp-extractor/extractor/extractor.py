@@ -22,10 +22,12 @@ odpEntitySetName = ""
 dataChunkSize = "1000"
 metaDataDDBName = ""
 dataS3Bucket = ""
+dataS3Folder = ""
 selfSignedCertificate = ""
 selfSignedCertificateS3Bucket = ""
 selfSignedCertificateS3Key = ""
 reLoad = False
+_athenacompatiblejson = False
 _allowInValidCerts = False
 
 # ------------------------
@@ -39,18 +41,19 @@ DELTATOKEN = "!deltatoken="
 # ------------------------
 # Initialize
 # ------------------------
-def _setResponse(success,message, data):
+def _setResponse(success,message, data, numberofrecs):
     response = {
         'success'   : success,
         'message'   : message,
         'traceback' : traceback.format_exc(),
-        'data'      : data
+        'data'      : data,
+        'numberofrecs' : numberofrecs
     }
     return response
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(metaDataDDBName)
-response = _setResponse(False,"Error in fetching data from SAP. Check detailed logs",None)
+response = _setResponse(False,"Error in fetching data from SAP. Check detailed logs",None,0)
 
 # ------------------------
 # Main Extract entry point
@@ -71,7 +74,7 @@ def extract():
                 else:    
                     _extract(metadata.pop('next'," "),True)
     except Exception as e:
-        response = _setResponse(False,str(e),None)
+        response = _setResponse(False,str(e),None,0)
 
     return response    
 
@@ -83,7 +86,8 @@ def _extract(link,isInit):
     global response
     url = link
     if url == " ":
-        url = _get_base_url() + "/EntityOf" + odpEntitySetName + "?$format=json"
+        #url = _get_base_url() + "/EntityOf" + odpEntitySetName + "?$format=json"
+        url = _get_base_url() + "/" + odpEntitySetName + "?$format=json"
     
     headers = {
         "prefer" : "odata.maxpagesize=" + dataChunkSize + ",odata.track-changes"
@@ -110,22 +114,32 @@ def _extract(link,isInit):
         if deltaTokenIndex > -1:
             deltaToken = delta[deltaTokenIndex:len(delta)]
             deltaToken = deltaToken.replace(DELTATOKEN, "")
-            deltaLink = _get_base_url() + "/DeltaLinksOfEntityOf" + odpEntitySetName + "(" + deltaToken + ")/ChangesAfter?$format=json"
+            deltaLink = _get_base_url() + "/DeltaLinksOf" + odpEntitySetName + "(" + deltaToken + ")/ChangesAfter?$format=json"
         else:
             deltaLink = _get_delta_link()
 
         _modify_ddb_table(DELTALOADING," ",deltaLink)
     
     if len(results)<=0:
-        response = _setResponse(True,"No data available to extract from SAP", _response)
+        response = _setResponse(True,"No data available to extract from SAP", _response, 0)
     elif(dataS3Bucket != ""):
         s3 = boto3.resource('s3')
-        fileName = ''.join([str(uuid.uuid4().hex[:6]),odpServiceName, "_", odpEntitySetName,".json"]) 
+        fileName = ''.join([dataS3Folder,'/',str(uuid.uuid4().hex[:6]),odpServiceName, "_", odpEntitySetName,".json"]) 
         object = s3.Object(dataS3Bucket, fileName)
-        object.put(Body=results)
-        response = _setResponse(True,"Data successfully extracted and stored in S3 Bucket with key " + fileName, None)
+        if _athenacompatiblejson==True:
+            object.put(Body=_athenaJson(results))
+        else:    
+            object.put(Body=json.dumps(results,indent=4))
+            
+        response = _setResponse(True,"Data successfully extracted and stored in S3 Bucket with key " + fileName, None, len(results))
     else:
-        response = _setResponse(True,"Data successfully extracted from SAP", _response)
+        response = _setResponse(True,"Data successfully extracted from SAP", _response, len(results))
+
+# ------------------------------------
+# Conver JSON to athena format
+# ------------------------------------
+def _athenaJson(objects):
+    return '\n'.join(json.dumps(obj) for obj in objects)
 
 # ------------------------------------
 # Get base url for HTTP calls to SAP
@@ -140,20 +154,23 @@ def _get_base_url():
 # Get the last available delta link
 # ------------------------------------    
 def _get_delta_link():
-    url = _get_base_url() + "/DeltaLinksOfEntityOf" + odpEntitySetName + "?$format=json"
-    sapresponse =  _make_http_call_to_sap(url,None)
-    sapresponsebody = json.loads(sapresponse.text)
-    d = sapresponsebody.pop('d',None)
-    results = d.pop('results',None)
-    if len(results) > 0:
-        result = results[len(results)-1]
-    
-    changesAfter = result.pop('ChangesAfter',None)
-    deferred = changesAfter.pop('__deferred',None)
-    deltauri = deferred.pop('uri'," ")
-    if deltauri != " ":
-        deltauri = deltauri + "?$format=json"
-    return deltauri
+    try:
+        url = _get_base_url() + "/DeltaLinksOf" + odpEntitySetName + "?$format=json"
+        sapresponse =  _make_http_call_to_sap(url,None)
+        sapresponsebody = json.loads(sapresponse.text)
+        d = sapresponsebody.pop('d',None)
+        results = d.pop('results',None)
+        if len(results) > 0:
+            result = results[len(results)-1]
+        
+        changesAfter = result.pop('ChangesAfter',None)
+        deferred = changesAfter.pop('__deferred',None)
+        deltauri = deferred.pop('uri'," ")
+        if deltauri != " ":
+            deltauri = deltauri + "?$format=json"
+        return deltauri
+    except:
+        return " "
     
 # ------------------------------------
 # Call SAP HTTP endpoint
