@@ -1,7 +1,4 @@
 #Local
+node_modules/
 local/
-sam-repo/
-build.sh
-packaged.yaml
 .DS_Store
-

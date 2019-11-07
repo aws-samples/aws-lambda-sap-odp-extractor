@@ -1,17 +1,18 @@
-# aws-sap-odp-auth
+# aws-lambda-sap-odp-extractor
 
-This is a sample serverless application (based on AWS Serverless Application Model - AWS SAM) for extracting data from SAP applications (SAP S/4HANA, SAP ECC and SAP BW) using Operational Data Provisioning (ODP). You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/). Operational Data Provisioning can expose the full load and delta data using OData services. This application package contains a Lambda layer to connect with SAP and consume the OData services as a REST API. Extracted data is saved to S3 Bucket. A DynamoDB table is also created to store the metadata for extracts. The package also contains a sample Lambda function to demonstrate usage of the lamdba layer
+This is a sample application for extracting data from SAP applications (SAP S/4HANA, SAP ECC and SAP BW) using Operational Data Provisioning (ODP). You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/). Operational Data Provisioning can expose the full load and delta data using OData services. This application package contains a Lambda layer to connect with SAP and consume the OData services as a REST API. Extracted data is saved to S3 Bucket. A DynamoDB table is also created to store the metadata for extracts. The package also contains a sample Lambda function to demonstrate usage of the lamdba layer
 
 ## Requirements
 
 * [AWS CLI already configured with Administrator permission](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)
-* [NodeJS 8.10+ installed](https://nodejs.org/en/download/)
-* [Docker installed](https://www.docker.com/community-edition)
-* [AWS SAM CLI installed](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+* [NodeJS 10.x installed](https://nodejs.org/en/download/)
+* [AWS CDK installed](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
 * SAP application (ABAP stack) with SAP Netweaver 7.5 or above. If required, you can create an SAP ABAP developer edition using cloud formation template [here](https://github.com/aws-samples/aws-cloudformation-sap-abap-dev)
 * OData services for ODP based extraction are already created. It is assumed to you know about ODP and how OData services can be created from them. [This](https://help.sap.com/viewer/ccc9cdbdc6cd4eceaf1e5485b1bf8f4b/7.5.9/en-US/11853413cf124dde91925284133c007d.html) SAP documentation link provides information on how to expose ODP as OData services. You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/).
 
 ## Setup Process
+
+Note: This process creates various resources in your AWS account. Check the resources created section for more information what gets created. You incur charges for resources using the resources created and you are responsible for those charges.
 
 ### Installation
 
@@ -20,102 +21,40 @@ This is a sample serverless application (based on AWS Serverless Application Mod
 2. Navigate to the root folder of the cloned repo and then perform the preparation steps.
 ```bash
 cd aws-lambda-sap-odp-extractor
+npm install
 ```
-
-### Preparation
-
-1. Create parameter store entry for storing the SAP user ID and password details. Make sure to change the value field with your user name and password
+3. Navigate to the lib folder
 ```bash
-aws ssm put-parameter \
-    --name sap-odp-extract-auth \
-    --description "Parameter to store SAP auth information" \
-    --value "{\"user\":\"MYUSERNAME\",\"password\":\"MYPASSWORD\"}" \
-    --type "SecureString" \
-    --overwrite \
+cd lib
 ```
-2. Create S3 bucket where extracted data can be stored. Make sure to change the bucket name and your region as required.
+4. Update the appConfig.json file in the lib folder to suit your needs. At a minimum, update your account ID, region details.
+
+5. Navigate to project root folder
 ```bash
-aws s3 mb s3://sap-odp-data-extracts --region us-east-1
+cd ..
 ```
 
-### Local Testing
-
-**Invoking function locally using a local sample payload**
-
-1. Create a file with name environment.json. Use the following format
-```javascript
-{
-    "SAPODPExtractorTestFunction": {
-        "sapHostName" :  "<your sap host name> for e.g. mysap.com (without https://)",
-        "sapPort" :  "<your sap https port>",
-        "sapAuthParameterStore": "<SSM Parameter created in step 1 above> for e.g. saponaws-odp-sap-odp-extract-auth",
-        "metaDataDDBName" : "sap-odp-extract-metadata",
-        "odpServiceName" : "<your ODP service name> for e.g. Z_ODP_EXTRACTORS_DEMO_SRV",
-        "odpEntitySetName" : "<your ODP entity set name> for e.g. ZKK_SALES_ORDERS",
-        "dataChunkSize" : "300",
-        "dataS3Bucket": "<bucket creted in step 2 above> for e.g. saponaws-odp-sap-odp-data-extracts"
-     }
-}
-```
-
-2. Start the Lambda function locally. Note down the end point url where Lambda is running. Usually http://127.0.0.1:3001
+6. Bootstrap your AWS account for CDK. Please check [here](https://docs.aws.amazon.com/cdk/latest/guide/tools.html) for more details on bootstraping for CDK. Bootstraping deploys a CDK toolkit stack to your account and creates a S3 bucket for storing various artifacts. You incur any charges for what the AWS CDK stores in the bucket. Because the AWS CDK does not remove any objects from the bucket, the bucket can accumulate objects as you use the AWS CDK. You can get rid of the bucket by deleting the CDKToolkit stack from your account.
 ```bash
-sam local start-lambda \
-    --env-vars environment.json \
-    --template ../template.yaml \
-    --parameter-overrides \
-        'ParameterKey=Environment,ParameterValue=saponaws-odp ParameterKey=DynamoDBTableName ParameterValue=sap-odp-extract-metadata'
+cdk bootstrap aws://<YOUR ACCOUNT ID>/<YOUR AWS REGION>
 ```
 
-3. Open another terminal window and run the following command to invoke the lambda function. Validate the local endpoint url for Lambda
+7. Deploy the stack to your account. Make sure your CLI is setup for account ID and region provided in the appConfig.json file. 
 ```bash
-aws lambda invoke \
-    --function-name "SAPODPExtractorTestFunction" \
-    --endpoint-url "http://127.0.0.1:3001" \
-    --no-verify-ssl \
-    out.txt
+cdk deploy
 ```
-4. Once run, check out.txt which should have the output of the lambda function
+8. Once the stack is deployed successfully, go to Secrets Manager and update the SAP user ID and password for connecting to the backend SAP application and pull data using OData/ODP. You can get the secrets manager ARN from the output of the CDK output or CloudFormation output
 
-### Error Handling
+### Testing
 
-In case of errors, check the values in the response body. 'success' will have a value of false. 'message' should provide you the reason for the failure and 'traceback' provides the stack trace of the exception. Go through the documentation of the extractor.py layer below to understand how the code works
+1. Open test Lambda function (you can get the name from the CloudFormation output) and update the odpServiceName, odpEntitySetName, sapHostName and sapPort according to your SAP application and OData details
 
-## Deployment
-
-1. Create a S3 bucket for storing latest version of your SAM app. If you are using an existing bucket, proceeed to step 2
-```bash
-
-aws s3 mb s3://<your account id>-sap-odp-extractor-sam-app>
-
-```
-
-2. Package the SAM app
-```bash
-
-sam package \
-    --output-template-file packaged.yaml \
-    --s3-bucket <<Your S3 bucket for SAM apps created above>>
-
-```
-
-3. Deploy the SAM app
-```bash
-aws cloudformation deploy \
-    --template-file packaged.yaml \
-    --stack-name saponaws-odp \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides \
-    Environment=saponaws-odp \
-    SAPAuthParameterStore="Parameter store name from perparation step 1" \
-    S3BucketForData="Bucket name from perparation step 2"  \
-    DynamoDBTableName=sap-odp-extract-metadata
-```
+2. Execute a test in the Lambda function. This should extract the data from backend SAP application and load it to the S3 bucket.
 
 ## Cleanup
 
-In order to delete our Serverless Application recently deployed you can use the following AWS CLI Command:
+In order to delete all resources created by this CDK app, run the following command
 ```bash
-aws cloudformation delete-stack --stack-name saponaws-odp
+cdk destroy
 ```
 

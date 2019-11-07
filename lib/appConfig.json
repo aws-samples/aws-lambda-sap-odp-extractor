@@ -1,0 +1,12 @@
+{
+    "env" : {
+        "account" : "917740759184",
+        "region" : "us-east-1"
+    },
+    "stackName" : "SAPODP",
+    "cfexports":{
+        "S3BucketForExtracts" : "S3BucketForExtracts",
+        "DDBForMetaData" : "DDBForMetaData",
+        "SAPAuthSecret" : "SAPAuthSecret"
+    }
+}

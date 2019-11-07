@@ -1,0 +1,179 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": [
+      {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      {
+        "id": "SAPODP",
+        "path": "SAPODP",
+        "children": [
+          {
+            "id": "SAPLambdaRole",
+            "path": "SAPODP/SAPLambdaRole",
+            "children": [
+              {
+                "id": "Resource",
+                "path": "SAPODP/SAPLambdaRole/Resource"
+              },
+              {
+                "id": "DefaultPolicy",
+                "path": "SAPODP/SAPLambdaRole/DefaultPolicy",
+                "children": [
+                  {
+                    "id": "Resource",
+                    "path": "SAPODP/SAPLambdaRole/DefaultPolicy/Resource"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "SAPAuth",
+            "path": "SAPODP/SAPAuth",
+            "children": [
+              {
+                "id": "Resource",
+                "path": "SAPODP/SAPAuth/Resource"
+              }
+            ]
+          },
+          {
+            "id": "metadatatable",
+            "path": "SAPODP/metadatatable",
+            "children": [
+              {
+                "id": "Resource",
+                "path": "SAPODP/metadatatable/Resource"
+              },
+              {
+                "id": "ScalingRole",
+                "path": "SAPODP/metadatatable/ScalingRole"
+              }
+            ]
+          },
+          {
+            "id": "databucket",
+            "path": "SAPODP/databucket",
+            "children": [
+              {
+                "id": "Resource",
+                "path": "SAPODP/databucket/Resource"
+              },
+              {
+                "id": "Notifications",
+                "path": "SAPODP/databucket/Notifications"
+              }
+            ]
+          },
+          {
+            "id": "ExtractorLayer",
+            "path": "SAPODP/ExtractorLayer",
+            "children": [
+              {
+                "id": "Code",
+                "path": "SAPODP/ExtractorLayer/Code",
+                "children": [
+                  {
+                    "id": "Stage",
+                    "path": "SAPODP/ExtractorLayer/Code/Stage"
+                  },
+                  {
+                    "id": "AssetBucket",
+                    "path": "SAPODP/ExtractorLayer/Code/AssetBucket"
+                  }
+                ]
+              },
+              {
+                "id": "Resource",
+                "path": "SAPODP/ExtractorLayer/Resource"
+              }
+            ]
+          },
+          {
+            "id": "AssetParameters",
+            "path": "SAPODP/AssetParameters",
+            "children": [
+              {
+                "id": "14b9cbb1138a9b0a69c0b6669bc755c43c36fce6dc90a9dce2d3d4a32f5c5fae",
+                "path": "SAPODP/AssetParameters/14b9cbb1138a9b0a69c0b6669bc755c43c36fce6dc90a9dce2d3d4a32f5c5fae",
+                "children": [
+                  {
+                    "id": "S3Bucket",
+                    "path": "SAPODP/AssetParameters/14b9cbb1138a9b0a69c0b6669bc755c43c36fce6dc90a9dce2d3d4a32f5c5fae/S3Bucket"
+                  },
+                  {
+                    "id": "S3VersionKey",
+                    "path": "SAPODP/AssetParameters/14b9cbb1138a9b0a69c0b6669bc755c43c36fce6dc90a9dce2d3d4a32f5c5fae/S3VersionKey"
+                  },
+                  {
+                    "id": "ArtifactHash",
+                    "path": "SAPODP/AssetParameters/14b9cbb1138a9b0a69c0b6669bc755c43c36fce6dc90a9dce2d3d4a32f5c5fae/ArtifactHash"
+                  }
+                ]
+              },
+              {
+                "id": "9b8394427f6b363b4b2fe006ac103688fb17916909a0037e7661d1c25748e49b",
+                "path": "SAPODP/AssetParameters/9b8394427f6b363b4b2fe006ac103688fb17916909a0037e7661d1c25748e49b",
+                "children": [
+                  {
+                    "id": "S3Bucket",
+                    "path": "SAPODP/AssetParameters/9b8394427f6b363b4b2fe006ac103688fb17916909a0037e7661d1c25748e49b/S3Bucket"
+                  },
+                  {
+                    "id": "S3VersionKey",
+                    "path": "SAPODP/AssetParameters/9b8394427f6b363b4b2fe006ac103688fb17916909a0037e7661d1c25748e49b/S3VersionKey"
+                  },
+                  {
+                    "id": "ArtifactHash",
+                    "path": "SAPODP/AssetParameters/9b8394427f6b363b4b2fe006ac103688fb17916909a0037e7661d1c25748e49b/ArtifactHash"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "TestLambdaFunction",
+            "path": "SAPODP/TestLambdaFunction",
+            "children": [
+              {
+                "id": "Code",
+                "path": "SAPODP/TestLambdaFunction/Code",
+                "children": [
+                  {
+                    "id": "Stage",
+                    "path": "SAPODP/TestLambdaFunction/Code/Stage"
+                  },
+                  {
+                    "id": "AssetBucket",
+                    "path": "SAPODP/TestLambdaFunction/Code/AssetBucket"
+                  }
+                ]
+              },
+              {
+                "id": "Resource",
+                "path": "SAPODP/TestLambdaFunction/Resource"
+              }
+            ]
+          },
+          {
+            "id": "S3BucketForExtracts",
+            "path": "SAPODP/S3BucketForExtracts"
+          },
+          {
+            "id": "DDBForMetaData",
+            "path": "SAPODP/DDBForMetaData"
+          },
+          {
+            "id": "SAPAuthSecret",
+            "path": "SAPODP/SAPAuthSecret"
+          }
+        ]
+      }
+    ]
+  }
+}
