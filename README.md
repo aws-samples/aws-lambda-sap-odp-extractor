@@ -47,7 +47,7 @@ cdk deploy
 
 ### Testing
 
-1. Open test Lambda function (you can get the name from the CloudFormation output) and update the odpServiceName, odpEntitySetName, sapHostName and sapPort according to your SAP application and OData details
+1. Open test Lambda function (you can get the name from the CloudFormation output) and update the dataS3Folder, odpServiceName, odpEntitySetName, sapHostName and sapPort according to your SAP application and OData details
 
 2. Execute a test in the Lambda function. This should extract the data from backend SAP application and load it to the S3 bucket.
 
