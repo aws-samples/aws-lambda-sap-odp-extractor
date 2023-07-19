@@ -1,5 +1,7 @@
 # aws-lambda-sap-odp-extractor
 
+> :warning: Note: This content is outdated, consider using [Amazon AppFlow for SAP](https://catalog.workshops.aws/sap-on-aws-beyond/en-US/aws-datalakes-for-sap/application-level/2-9-sap-appflow) instead!
+
 This is a sample application for extracting data from SAP applications (SAP S/4HANA, SAP ECC and SAP BW) using Operational Data Provisioning (ODP). You can find more information on ODP [here](https://blogs.sap.com/2017/07/20/operational-data-provisioning-odp-faq/). Operational Data Provisioning can expose the full load and delta data using OData services. This application package contains a Lambda layer to connect with SAP and consume the OData services as a REST API. Extracted data is saved to S3 Bucket. A DynamoDB table is also created to store the metadata for extracts. The package also contains a sample Lambda function to demonstrate usage of the lamdba layer
 
 ## Requirements
